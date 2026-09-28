@@ -42,13 +42,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useEnrollmentStore } from "@/lib/enrollment-store";
+
 export default function AdminCoursesPage() {
-  const {
-    courses,
-    addCourse,
-    removeCourse,
-    removeInstructor: removeInstructorFromCourse,
-  } =
+  const { courses, addCourse, removeCourse, removeInstructor } =
     useEnrollmentStore();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteCode, setDeleteCode] = useState<string | null>(null);
@@ -107,10 +103,6 @@ export default function AdminCoursesPage() {
     addCourse({ courseCode: normalizedCode, courseTitle: title, instructors });
     handleDialogChange(false);
   };
-
-function removeInstructor(courseCode: any, instructor: any): void {
-  removeInstructorFromCourse(courseCode, instructor);
-}
 
   return (
     <div className="space-y-4">
@@ -315,4 +307,5 @@ function removeInstructor(courseCode: any, instructor: any): void {
         </AlertDialogContent>
       </AlertDialog>
     </div>
-  )};
+  );
+}

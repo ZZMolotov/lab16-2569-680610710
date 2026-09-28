@@ -66,7 +66,8 @@ function OptionSelect({
 }
 
 export default function AdminEnrollmentsPage() {
-  const { students, courses, enrollments, enroll } = useEnrollmentStore();
+  const { students, courses, enroll, ...store } = useEnrollmentStore();
+  const enrollments = "enrollments" in store ? store.enrollments : [];
 
   const [formStudent, setFormStudent] = useState<string | null>(null);
   const [formCourse, setFormCourse] = useState<string | null>(null);
@@ -74,20 +75,21 @@ export default function AdminEnrollmentsPage() {
   const [mode, setMode] = useState<"course" | "student">("course");
   const [filterCourse, setFilterCourse] = useState("all");
   const [filterStudent, setFilterStudent] = useState("all");
+  const enrollmentRows = Array.isArray(enrollments) ? enrollments : [];
 
   const studentOptions: Option[] = students.map((s) => ({
     value: s.studentId,
     label: `${s.studentId} — ${s.firstName} ${s.lastName}`,
   }));
   const courseOptions: Option[] = courses.map((c) => ({
-    value: c.courseId,
-    label: `${c.courseId} — ${c.courseTitle}`,
+    value: c.courseCode,
+    label: `${c.courseCode} — ${c.courseTitle}`,
   }));
 
   // วิชาที่นักศึกษาที่เลือกยังไม่ได้ลงทะเบียน
   const availableCourseOptions = courseOptions.filter(
     (c) =>
-      !enrollments.some(
+      !enrollmentRows.some(
         (e) => e.studentId === formStudent && e.courseId === c.value
       )
   );
@@ -98,8 +100,7 @@ export default function AdminEnrollmentsPage() {
     setEnrollDialogOpen(false);
   };
 
-  // เคลียร์ฟอร์มทุกครั้งที่ Dialog ปิด ไม่ว่าจะปิดเพราะลงทะเบียนสำเร็จ, กด X,
-  // หรือคลิกนอก Dialog — เปิดครั้งหน้าจะได้เริ่มจากฟอร์มว่างเสมอ
+ 
   const handleEnrollDialogOpenChange = (open: boolean) => {
     setEnrollDialogOpen(open);
     if (!open) {
@@ -108,7 +109,7 @@ export default function AdminEnrollmentsPage() {
     }
   };
 
-  const rows = enrollments.filter((e) =>
+  const rows = enrollmentRows.filter((e) =>
     mode === "course"
       ? filterCourse === "all" || e.courseId === filterCourse
       : filterStudent === "all" || e.studentId === filterStudent
@@ -119,7 +120,7 @@ export default function AdminEnrollmentsPage() {
     return s ? `${s.firstName} ${s.lastName}` : "-";
   };
   const titleOf = (courseId: string) =>
-    courses.find((c) => c.courseId === courseId)?.courseTitle ?? "-";
+    courses.find((c) => c.courseCode === courseId)?.courseTitle ?? "-";
 
   return (
     <div className="space-y-4">
@@ -135,7 +136,7 @@ export default function AdminEnrollmentsPage() {
           <PlusCircle className="h-4 w-4" />
           ลงทะเบียนให้นักศึกษา
         </DialogTrigger>
-        <DialogContent>
+        <DialogContent className="sm:max-w-2xl">
           <DialogHeader>
             <DialogTitle>ลงทะเบียนให้นักศึกษา</DialogTitle>
             <DialogDescription>
