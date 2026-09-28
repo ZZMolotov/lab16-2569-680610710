@@ -1,5 +1,5 @@
 import { Outlet } from "react-router";
-
+import Footer from "@/components/Footer";
 import { AppSidebar } from "@/components/app-sidebar";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Separator } from "@/components/ui/separator";
@@ -18,14 +18,14 @@ export default function RootLayout() {
           <div className="flex items-center gap-2">
             <SidebarTrigger />
             <Separator orientation="vertical" className="h-4" />
-            <span className="text-sm font-medium">ระบบลงทะเบียนเรียน</span>
+            <span className="text-sm font-medium">จัดการวิชาเรียนและสถานะนักศึกษา</span>
           </div>
           <ModeToggle />
         </header>
         <main className="flex-1 p-4">
           <Outlet />
         </main>
-        <footer className="border-t p-4 text-center text-xs text-muted-foreground"></footer>
+        <Footer fullName="Rapeepong Rairung" studentId="680610710" />
       </SidebarInset>
     </SidebarProvider>
   );
